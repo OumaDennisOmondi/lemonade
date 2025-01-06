@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 class LaravelMonitor:
     def __init__(self):
         self.cpu_threshold = 80.0  # 80% CPU threshold
-        self.check_interval = 30   # Check every 30 seconds
+        self.check_interval = 5   # Check every 30 seconds
         self.service_name = "laravel-monitor.service"  # Systemd service name
         
     def get_php_path(self):

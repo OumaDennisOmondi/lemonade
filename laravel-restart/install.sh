@@ -14,7 +14,7 @@ handle_error() {
 }
 
 # install psutil globally
-sudo apt install python3-psutil
+sudo apt install python3-psutil -y
 
 # Copy the script to a suitable location and check if it succeeds
 echo "Copying restart.py to /usr/local/bin/"
