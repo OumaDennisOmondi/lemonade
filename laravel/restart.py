@@ -24,6 +24,21 @@ class LaravelMonitor:
         self.check_interval = 30   # Check every 30 seconds
         self.service_name = "laravel-monitor.service"  # Systemd service name
         
+    def get_php_path(self):
+        """Get PHP executable path"""
+        try:
+            result = subprocess.run(
+                ["which", "php"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            return result.stdout.strip()
+        except subprocess.CalledProcessError:
+            logger.error("PHP not found in system PATH")
+        return "/usr/bin/php"  # fallback to default    
+    
+
     def get_cpu_usage(self):
         """Get current CPU usage percentage"""
         try:
@@ -36,42 +51,40 @@ class LaravelMonitor:
         """Restart the Laravel service"""
         try:
             logger.info("Attempting to restart Laravel service...")
+            php_path = self.get_php_path()
+            logger.info(f"Using PHP at: {php_path}")
             
             # Run artisan down command first
-            subprocess.run(
-                ["php", "artisan", "down"],
+            down = subprocess.run(
+                [self.php_path, "artisan", "down"],
                 cwd="/home/ubuntu/laravel-app",
+                capture_output=True,  # Capture the output
+                text=True,           # Return string instead of bytes
                 check=True
             )
-            
-            # Restart the service
-            subprocess.run(
-                ["sudo", "systemctl", "restart", self.service_name],
-                check=True
-            )
+            if "maintenance" in down.stdout.lower():
+                logger.info("Application brought down successfully")
+            else:
+                logger.error(f"Unexpected output: {down.stdout}")
+                return False
             
             # Wait for service to start
             time.sleep(7)
             
             # Run artisan up command
-            subprocess.run(
-                ["php", "artisan", "up"],
-                cwd="/home/ubuntu/laravel-app",
-                check=True
+            up = subprocess.run(
+            [self.php_path, "artisan", "up"],
+            cwd="/home/ubuntu/laravel-app",
+            capture_output=True,  # Capture the output
+            text=True,           # Return string instead of bytes
+            check=True
             )
             
-            # Verify service status
-            result = subprocess.run(
-                ["systemctl", "is-active", self.service_name],
-                capture_output=True,
-                text=True
-            )
-            
-            if result.stdout.strip() == "active":
-                logger.info("Laravel service restarted successfully")
+            if "live" in up.stdout.lower():
+                logger.info("Laravel application restarted successfully")
                 return True
             else:
-                logger.error("Service restart failed - service not active")
+                logger.error(f"Service restart failed - service not active : {up.stdout}")
                 return False
                 
         except subprocess.CalledProcessError as e:
