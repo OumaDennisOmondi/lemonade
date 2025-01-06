@@ -34,9 +34,9 @@ class LaravelMonitor:
                 check=True
             )
             return result.stdout.strip()
-        except subprocess.CalledProcessError:
-            logger.error("PHP not found in system PATH")
-        return "/usr/bin/php"  # fallback to default    
+        except subprocess.CalledProcessError as e:
+            logger.error(f"PHP not found in system PATH: {e}")
+            return "/usr/bin/php"  # fallback to default    
     
 
     def get_cpu_usage(self):
@@ -51,12 +51,12 @@ class LaravelMonitor:
         """Restart the Laravel service"""
         try:
             logger.info("Attempting to restart Laravel service...")
-            php_path = self.get_php_path()
+            php_path = os.environ.get('PHP_PATH', self.get_php_path())
             logger.info(f"Using PHP at: {php_path}")
             
             # Run artisan down command first
             down = subprocess.run(
-                [self.php_path, "artisan", "down"],
+                [php_path, "artisan", "down"],
                 cwd="/home/ubuntu/laravel-app",
                 capture_output=True,  # Capture the output
                 text=True,           # Return string instead of bytes
@@ -73,7 +73,7 @@ class LaravelMonitor:
             
             # Run artisan up command
             up = subprocess.run(
-            [self.php_path, "artisan", "up"],
+            [php_path, "artisan", "up"],
             cwd="/home/ubuntu/laravel-app",
             capture_output=True,  # Capture the output
             text=True,           # Return string instead of bytes
