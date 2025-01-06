@@ -6,6 +6,7 @@ import subprocess
 import logging
 from datetime import datetime
 import os
+import sys
 
 # Configure logging
 logging.basicConfig(
@@ -51,7 +52,7 @@ class LaravelMonitor:
         """Restart the Laravel service"""
         try:
             logger.info("Attempting to restart Laravel service...")
-            php_path = os.environ.get('PHP_PATH', self.get_php_path())
+            php_path =(sys.argv[1], self.get_php_path())
             logger.info(f"Using PHP at: {php_path}")
             
             # Run artisan down command first
