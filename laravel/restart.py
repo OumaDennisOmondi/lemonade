@@ -37,7 +37,10 @@ class LaravelMonitor:
             return result.stdout.strip()
         except subprocess.CalledProcessError as e:
             logger.error(f"PHP not found in system PATH: {e}")
-            return "/usr/bin/php"  # fallback to default    
+            if len(sys.argv) > 1:
+                php_path = sys.argv[1]
+            else:
+                return "/usr/bin/php"  # fallback to default    
     
 
     def get_cpu_usage(self):
