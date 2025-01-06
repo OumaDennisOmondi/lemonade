@@ -13,6 +13,9 @@ handle_error() {
     exit 1
 }
 
+# install psutil globally
+pip install psutil
+
 # Copy the script to a suitable location and check if it succeeds
 echo "Copying restart.py to /usr/local/bin/"
 sudo cp restart.py /usr/local/bin/ || handle_error "Failed to copy restart.py to /usr/local/bin/"

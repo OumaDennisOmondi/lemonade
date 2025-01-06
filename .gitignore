@@ -22,7 +22,7 @@ sdist/
 var/
 wheels/
 *.egg-info/
-.installed.cfg
+.installed.cfggit 
 *.egg
 venv/
 .venv/
