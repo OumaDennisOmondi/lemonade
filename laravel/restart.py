@@ -40,7 +40,7 @@ class LaravelMonitor:
             # Run artisan down command first
             subprocess.run(
                 ["php", "artisan", "down"],
-                cwd="/var/www/laravel",
+                cwd="/home/ubuntu/laravel-app",
                 check=True
             )
             
@@ -56,7 +56,7 @@ class LaravelMonitor:
             # Run artisan up command
             subprocess.run(
                 ["php", "artisan", "up"],
-                cwd="/var/www/laravel",
+                cwd="/home/ubuntu/laravel-app",
                 check=True
             )
             
