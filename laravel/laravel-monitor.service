@@ -1,0 +1,13 @@
+[Unit]
+Description=Laravel CPU Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /usr/local/bin/restart.py.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
