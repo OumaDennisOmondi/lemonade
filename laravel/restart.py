@@ -39,6 +39,7 @@ class LaravelMonitor:
             logger.error(f"PHP not found in system PATH: {e}")
             if len(sys.argv) > 1:
                 php_path = sys.argv[1]
+                return php_path
             else:
                 return "/usr/bin/php"  # fallback to default    
     
